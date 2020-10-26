@@ -16,5 +16,9 @@ func _ready():
 #	pass
 
 
-func _on_Golf_pressed():
+func _on_golf_pressed():
 	var _ret = get_tree().change_scene("res://golf.tscn")
+
+
+func _on_exit_pressed():
+	get_tree().quit()

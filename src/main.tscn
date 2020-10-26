@@ -19,4 +19,15 @@ text = "Golf"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-[connection signal="pressed" from="Golf" to="." method="_on_Golf_pressed"]
+
+[node name="Exit" type="Button" parent="."]
+margin_left = 681.0
+margin_top = 410.0
+margin_right = 979.0
+margin_bottom = 563.0
+text = "Exit"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="Golf" to="." method="_on_golf_pressed"]
+[connection signal="pressed" from="Exit" to="." method="_on_exit_pressed"]

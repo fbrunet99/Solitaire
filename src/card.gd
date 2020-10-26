@@ -16,5 +16,5 @@ func set_back():
 
 
 func set_cardnum(num):
-	if num >= 0 and num <= 52:
-		$CardSprite.frame = 1 + num
+	if num > 0 and num <= 52:
+		$CardSprite.frame = num-1
