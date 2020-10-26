@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://main.gd" type="Script" id=1]
+
+[node name="Main" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Golf" type="Button" parent="."]
+margin_left = 72.0
+margin_top = 56.0
+margin_right = 370.0
+margin_bottom = 209.0
+text = "Golf"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="Golf" to="." method="_on_Golf_pressed"]
