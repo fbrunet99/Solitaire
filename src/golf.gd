@@ -2,6 +2,7 @@ extends Node2D
 
 var Card = preload("res://card.tscn")
 
+
 const DECK_LEFT = 190
 const DECK_RIGHT = 800
 const DECK_TOP = 130
@@ -33,13 +34,17 @@ func setup_screen():
 func add_card(idx, pos):
 	var new_card = Card.instance()
 	new_card.set_cardnum(idx)
+	new_card.z_index = idx
 	new_card.position = pos
+	new_card.connect("card_clicked", self, "on_foundation_clicked")
 	add_child(new_card)
 	 
 
 func _on_Main_pressed():
 	var _ret = get_tree().change_scene("res://main.tscn")
 
+func on_foundation_clicked(value, suit):
+	print("Foundation clicked. value:", value, " suit:", suit)
 
 func _on_New_pressed():
 	print("Should start new game")
