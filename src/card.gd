@@ -5,9 +5,11 @@ var CardInfo = preload("res://card_info.gd").new()
 
 signal card_clicked
 
-var cur_idx = 0
+var _cur_idx setget set_cardnum
 
 func _ready():
+	if _cur_idx == null:
+		_cur_idx = 0
 	pass # Replace with function body.
 
 
@@ -15,26 +17,27 @@ func _ready():
 #	pass
 
 
-func set_back():
-	$CardSprite.frame = 1 + CardInfo.DECK_SIZE
+func set_back(num):
+	$CardSprite.frame = num + CardInfo.DECK_SIZE
+
 
 
 func set_cardnum(num):
-	cur_idx = num
+	_cur_idx = num
 	if num > 0 and num <= CardInfo.DECK_SIZE:
 		$CardSprite.frame = num
 
 
 func get_value():
 	var ret
-	if cur_idx < 1 + CardInfo.SUIT_SIZE:
-		ret = cur_idx
-	elif cur_idx < 1 + (2 * CardInfo.SUIT_SIZE):
-		ret = cur_idx - CardInfo.SUIT_SIZE
-	elif cur_idx < 1 + (3 * CardInfo.SUIT_SIZE):
-		ret = cur_idx - (2 * CardInfo.SUIT_SIZE)
-	elif cur_idx < 1 + (4 * CardInfo.SUIT_SIZE):
-		ret = cur_idx - (3 * CardInfo.SUIT_SIZE)
+	if _cur_idx < 1 + CardInfo.SUIT_SIZE:
+		ret = _cur_idx
+	elif _cur_idx < 1 + (2 * CardInfo.SUIT_SIZE):
+		ret = _cur_idx - CardInfo.SUIT_SIZE
+	elif _cur_idx < 1 + (3 * CardInfo.SUIT_SIZE):
+		ret = _cur_idx - (2 * CardInfo.SUIT_SIZE)
+	elif _cur_idx < 1 + (4 * CardInfo.SUIT_SIZE):
+		ret = _cur_idx - (3 * CardInfo.SUIT_SIZE)
 
 #	print("getting value div= ", cur_idx / 13, " mod=", ret)
 	return ret
@@ -43,13 +46,13 @@ func get_value():
 func get_suit():
 	var ret = 0
 	
-	if cur_idx <  1 + CardInfo.SUIT_SIZE:
+	if _cur_idx <  1 + CardInfo.SUIT_SIZE:
 		ret = CardInfo.Suits.CLUBS
-	elif cur_idx < 1 + (2 * CardInfo.SUIT_SIZE):
+	elif _cur_idx < 1 + (2 * CardInfo.SUIT_SIZE):
 		ret = CardInfo.Suits.DIAMONDS
-	elif cur_idx < 1 + (3 * CardInfo.SUIT_SIZE):
+	elif _cur_idx < 1 + (3 * CardInfo.SUIT_SIZE):
 		ret = CardInfo.Suits.SPADES
-	elif cur_idx < 1 + (4 * CardInfo.SUIT_SIZE):
+	elif _cur_idx < 1 + (4 * CardInfo.SUIT_SIZE):
 		ret = CardInfo.Suits.HEARTS
 
 	return ret

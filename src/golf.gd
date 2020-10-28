@@ -17,6 +17,7 @@ const TABLEAU_TOP = 130
 
 
 func _ready():
+	$Waste.connect("card_clicked", self, "on_waste_clicked")
 	setup_screen()
 
 
@@ -25,6 +26,8 @@ func _ready():
 #	pass
 
 func setup_screen():
+	$Waste.set_back(16)
+	
 	var x = TABLEAU_LEFT - COL_WIDTH
 	var y = TABLEAU_TOP
 	
@@ -62,6 +65,9 @@ func on_foundation_clicked(value, suit):
 
 func on_tableau_clicked(value, suit):
 	print("Tableau clicked. value:", value, " suit:", suit)
+
+func on_waste_clicked(_value, _suit):
+	print("Move the top card from the foundation to waste")
 
 func _on_New_pressed():
 	print("Should start new game")
