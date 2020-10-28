@@ -16,35 +16,42 @@ func _ready():
 
 
 func set_back():
-	$CardSprite.frame = 58
+	$CardSprite.frame = 1 + CardInfo.DECK_SIZE
 
 
 func set_cardnum(num):
 	cur_idx = num
-	if num > 0 and num <= 52:
-		$CardSprite.frame = num-1
+	if num > 0 and num <= CardInfo.DECK_SIZE:
+		$CardSprite.frame = num
 
 
 func get_value():
 	var ret
-	ret = cur_idx % 13
+	if cur_idx < 1 + CardInfo.SUIT_SIZE:
+		ret = cur_idx
+	elif cur_idx < 1 + (2 * CardInfo.SUIT_SIZE):
+		ret = cur_idx - CardInfo.SUIT_SIZE
+	elif cur_idx < 1 + (3 * CardInfo.SUIT_SIZE):
+		ret = cur_idx - (2 * CardInfo.SUIT_SIZE)
+	elif cur_idx < 1 + (4 * CardInfo.SUIT_SIZE):
+		ret = cur_idx - (3 * CardInfo.SUIT_SIZE)
 
 #	print("getting value div= ", cur_idx / 13, " mod=", ret)
 	return ret
 
 
 func get_suit():
-	var ret
+	var ret = 0
 	
-	if cur_idx < 13:
+	if cur_idx <  1 + CardInfo.SUIT_SIZE:
 		ret = CardInfo.Suits.CLUBS
-	elif cur_idx < 26:
+	elif cur_idx < 1 + (2 * CardInfo.SUIT_SIZE):
 		ret = CardInfo.Suits.DIAMONDS
-	elif cur_idx < 39:
+	elif cur_idx < 1 + (3 * CardInfo.SUIT_SIZE):
 		ret = CardInfo.Suits.SPADES
-	elif cur_idx < 52:
+	elif cur_idx < 1 + (4 * CardInfo.SUIT_SIZE):
 		ret = CardInfo.Suits.HEARTS
-		
+
 	return ret
 
 func is_on_top():
@@ -68,12 +75,11 @@ func is_on_top():
 	return onTop
 
 
-func _on_card_input_event(viewport, event, shape_idx):
+func _on_card_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.pressed:
 		var value = get_value()
 		var suit = get_suit()
 		var onTop = is_on_top()
 		if onTop:
-			print("Card:", value, " suit:", suit)
 			emit_signal("card_clicked", value, suit)
 	

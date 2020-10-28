@@ -3,12 +3,17 @@ extends Node2D
 var Card = preload("res://card.tscn")
 
 
-const DECK_LEFT = 190
-const DECK_RIGHT = 800
-const DECK_TOP = 130
 const COL_WIDTH = 100
+const DECK_SIZE = 52
+const FOUNDATION_TOP = 400
+const FOUNDATION_LEFT = 300
 const ROW_HEIGHT = 50
-const FOUNDATION_SIZE = 35
+const STOCK_LEFT = 300
+const STOCK_TOP = 500
+const TABLEAU_LEFT = 190
+const TABLEAU_RIGHT = 800
+const TABLEAU_SIZE = 35
+const TABLEAU_TOP = 130
 
 
 func _ready():
@@ -20,23 +25,32 @@ func _ready():
 #	pass
 
 func setup_screen():
-	var x = DECK_LEFT - COL_WIDTH
-	var y = DECK_TOP
+	var x = TABLEAU_LEFT - COL_WIDTH
+	var y = TABLEAU_TOP
 	
-	for i in range(1, 1 + FOUNDATION_SIZE):
+	for i in range(1, 1 + TABLEAU_SIZE):
 		x += COL_WIDTH
-		if (x > DECK_RIGHT):
-			x = DECK_LEFT
+		if (x > TABLEAU_RIGHT):
+			x = TABLEAU_LEFT
 			y += ROW_HEIGHT
 		var pos = Vector2(x, y)
-		add_card(i, pos)
+		add_card(i, pos, false)
+		
+	x = STOCK_LEFT
+	y = STOCK_TOP 
 
-func add_card(idx, pos):
+	for i in range(1 + TABLEAU_SIZE, 1 + DECK_SIZE):
+		var pos = Vector2(x, y)
+		add_card(i, pos, true)
+
+
+func add_card(idx, pos, isFoundation: bool):
 	var new_card = Card.instance()
 	new_card.set_cardnum(idx)
 	new_card.z_index = idx
 	new_card.position = pos
-	new_card.connect("card_clicked", self, "on_foundation_clicked")
+	new_card.connect("card_clicked", self, 
+			"on_foundation_clicked" if isFoundation else "on_tableau_clicked")
 	add_child(new_card)
 	 
 
@@ -45,6 +59,9 @@ func _on_Main_pressed():
 
 func on_foundation_clicked(value, suit):
 	print("Foundation clicked. value:", value, " suit:", suit)
+
+func on_tableau_clicked(value, suit):
+	print("Tableau clicked. value:", value, " suit:", suit)
 
 func _on_New_pressed():
 	print("Should start new game")
