@@ -5,7 +5,8 @@ var CardInfo = preload("res://card_info.gd").new()
 
 signal card_clicked
 
-var _cur_idx setget set_cardnum
+var _cur_idx setget set_cardnum, get_cardnum
+
 
 func _ready():
 	if _cur_idx == null:
@@ -26,6 +27,10 @@ func set_cardnum(num):
 	_cur_idx = num
 	if num > 0 and num <= CardInfo.DECK_SIZE:
 		$CardSprite.frame = num
+
+
+func get_cardnum():
+	return _cur_idx
 
 
 func get_value():
@@ -77,6 +82,10 @@ func is_on_top():
 
 	return onTop
 
+func move_to(new_position, remove):
+	position = new_position
+	if remove:
+		queue_free()
 
 func _on_card_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.pressed:
@@ -84,5 +93,5 @@ func _on_card_input_event(_viewport, event, _shape_idx):
 		var suit = get_suit()
 		var onTop = is_on_top()
 		if onTop:
-			emit_signal("card_clicked", value, suit)
+			emit_signal("card_clicked", self)
 	
