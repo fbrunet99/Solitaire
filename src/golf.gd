@@ -56,6 +56,9 @@ func setup_screen():
 		card = add_card(_deck[i], pos, true)
 		add_child(card)
 		_stock.push_back(card)
+	
+	$ScoreOverlay.update_score(-DECK_SIZE)
+	$ScoreOverlay.set_remain(DECK_SIZE - TABLEAU_SIZE)
 
 
 func add_card(idx, pos, isStock: bool):
@@ -100,6 +103,7 @@ func on_tableau_clicked(card):
 		
 		$Waste.set_cardnum(card.get_cardnum())
 		card.move_to($Waste.position, true)
+		$ScoreOverlay.update_score(5)
 
 
 
@@ -112,6 +116,7 @@ func on_waste_clicked(card):
 				" idx=", idx)
 		stock_card.move_to($Waste.position, true)
 		$Waste.set_cardnum(idx)
+		$ScoreOverlay.update_remain(-1)
 	
 
 func _on_New_pressed():

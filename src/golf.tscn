@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://golf.gd" type="Script" id=1]
 [ext_resource path="res://card.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/felt-back.png" type="Texture" id=3]
+[ext_resource path="res://score-overlay.tscn" type="PackedScene" id=4]
 
 [node name="Golf" type="Node2D"]
 script = ExtResource( 1 )
@@ -39,5 +40,7 @@ __meta__ = {
 
 [node name="Waste" parent="." instance=ExtResource( 2 )]
 position = Vector2( 564, 504 )
+
+[node name="ScoreOverlay" parent="." instance=ExtResource( 4 )]
 [connection signal="pressed" from="Main" to="." method="_on_Main_pressed"]
 [connection signal="pressed" from="New" to="." method="_on_New_pressed"]
