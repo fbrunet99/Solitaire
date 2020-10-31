@@ -5,35 +5,47 @@ var CardInfo = preload("res://card_info.gd").new()
 
 signal card_clicked
 
-var _cur_idx setget set_cardnum, get_cardnum
+var _cur_idx: int setget set_cardnum, get_cardnum
+var _face_down: bool setget set_face_down, is_face_down
+var _cur_back = 63
 
 
 func _ready():
+	_face_down = false
 	if _cur_idx == null:
 		_cur_idx = 0
-	pass # Replace with function body.
 
 
 #func _process(delta):
 #	pass
 
 
-func set_back(num):
-	$CardSprite.frame = num + CardInfo.DECK_SIZE
+func set_face_down(is_down: bool):
+	_face_down = is_down
+	update_image()
 
 
+func is_face_down() -> bool:
+	return _face_down
 
-func set_cardnum(num):
+
+# Set this card as a back with no value
+func make_placeholder(num: int):
+	$CardSprite.frame = num + (2 + CardInfo.DECK_SIZE)
+	_cur_idx = -1
+	update_image()
+
+
+func set_cardnum(num: int):
 	_cur_idx = num
-	if num > 0 and num <= CardInfo.DECK_SIZE:
-		$CardSprite.frame = num
+	update_image()
 
 
-func get_cardnum():
+func get_cardnum() -> int:
 	return _cur_idx
 
 
-func get_value():
+func get_value() -> int:
 	var ret
 	if _cur_idx < 1 + CardInfo.SUIT_SIZE:
 		ret = _cur_idx
@@ -62,7 +74,7 @@ func get_suit():
 
 	return ret
 
-func is_on_top():
+func is_on_top() -> bool:
 	var onTop = true
 	var others = get_overlapping_areas()
 
@@ -82,16 +94,25 @@ func is_on_top():
 
 	return onTop
 
+
+func update_image():
+	if is_face_down():
+		$CardSprite.frame = _cur_back
+	else:
+		if _cur_idx > 0 and _cur_idx <= CardInfo.DECK_SIZE:
+			$CardSprite.frame = _cur_idx
+
+
+
 func move_to(new_position, remove):
 	position = new_position
 	if remove:
 		queue_free()
 
+
 func _on_card_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.pressed:
-		var value = get_value()
-		var suit = get_suit()
 		var onTop = is_on_top()
 		if onTop:
 			emit_signal("card_clicked", self)
-	
+

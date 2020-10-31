@@ -23,6 +23,7 @@ margin_left = 8.0
 margin_top = 8.0
 margin_right = 82.0
 margin_bottom = 40.0
+hint_tooltip = "End current game and go back to the main menu. "
 text = "Main"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -33,16 +34,17 @@ margin_left = 8.0
 margin_top = 48.0
 margin_right = 82.0
 margin_bottom = 80.0
+hint_tooltip = "End current game and start a new one"
 text = "New"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Stock" parent="." instance=ExtResource( 2 )]
-position = Vector2( 736, 504 )
+position = Vector2( 736, 512 )
 
 [node name="Current" parent="." instance=ExtResource( 2 )]
-position = Vector2( 400, 504 )
+position = Vector2( 400, 512 )
 
 [node name="ScoreOverlay" parent="." instance=ExtResource( 4 )]
 [connection signal="pressed" from="Main" to="." method="_on_Main_pressed"]

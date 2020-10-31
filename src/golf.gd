@@ -14,43 +14,56 @@ const TABLEAU_TOP = 100
 
 var _deck = []
 var _stock = []
+var _tableau = []
 
 func _ready():
 	randomize()
-	$Stock.connect("card_clicked", self, "on_stock_clicked")
+	var _err = $Stock.connect("card_clicked", self, "on_stock_clicked")
 	var pos = Vector2(300, 0)
 	var card
 
 
+	# Create a deck that can be reused across multiple games
 	if _deck.size() == 0:
 		for i in range(1, DECK_SIZE + 1):
 			card = create_card(i, pos)
 			add_child(card)
 			_deck.append(card)
 	
-	setup_screen()
+	start_game()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
 
-func setup_screen():
+func start_game():
+	$ScoreOverlay.clear_messages()
+	deal_cards()
+
+
+# Shuffle the deck and move the cards to the tableau and stock
+func deal_cards():
 	_stock.clear()
-	$Stock.set_back(3)
+	_tableau.clear()
+	$Stock.make_placeholder(9)
 	
-	var card
+	disconnect_deck_signals()
+	
 	_deck.shuffle()
 	
 	var x = TABLEAU_LEFT - COL_WIDTH
 	var y = TABLEAU_TOP
-	
+
+	var card
 	for i in range(0, TABLEAU_SIZE):
 		x += COL_WIDTH
 		if (x > TABLEAU_RIGHT):
 			x = TABLEAU_LEFT
 			y += ROW_HEIGHT
 		card = _deck[i]
+		_tableau.append(card)
+		card.set_face_down(false)
 		card.z_index = i
 		card.connect("card_clicked", self, "on_tableau_clicked")
 		card.position = Vector2(x, y)
@@ -63,22 +76,52 @@ func setup_screen():
 		card.connect("card_clicked", self, "on_stock_clicked")
 		card.position = Vector2(x, y)
 		card.z_index = i
-		add_child(card)
 		_stock.push_back(card)
 	
 	$ScoreOverlay.update_score(-DECK_SIZE)
 	$ScoreOverlay.set_remain(DECK_SIZE - TABLEAU_SIZE)
 	$Current.visible = false
+	$Current.set_cardnum(-1)
 
 
-func create_card(idx, pos):
-	var new_card = Card.instance()
-	new_card.set_cardnum(idx)
-#	new_card.z_index = idx
-	new_card.position = pos
-	return new_card
+# Go back to the main menu
+# todo: give are-you-sure dialog if there are any moves
+func _on_Main_pressed():
+	var _ret = get_tree().change_scene("res://main.tscn")
 
-	 
+
+# If possible get another card from the stock
+func on_stock_clicked(_card):
+	$Current.visible = true
+	if _stock.size() > 0:
+		var stock_card = _stock.pop_back()
+		var idx = stock_card.get_cardnum()
+		print("value = ", stock_card.get_value(), " suit=", stock_card.get_suit(),
+				" idx=", idx)
+		remove_card(stock_card)
+		$Current.set_cardnum(idx)
+		$ScoreOverlay.update_remain(-1)
+		
+		detect_end()
+
+
+# Remove a card from the tableau if it can be done
+func on_tableau_clicked(card):
+	var value = card.get_value()
+	var suit = card.get_suit()
+	print("Tableau clicked. value:", value, " suit:", suit)
+
+	var current_value = $Current.get_value()
+	if is_match(value, current_value):
+		print("It matches")
+		
+		$Current.set_cardnum(card.get_cardnum())
+		remove_card(card)
+		_tableau.erase(card)
+		$ScoreOverlay.update_score(5)
+
+
+# Return true if the values given are a golf match
 func is_match(value1, value2):
 	if ((value1 == 1 && value2 == 13) || (value1 == 13 && value2 == 1)):
 		return true
@@ -92,45 +135,73 @@ func is_match(value1, value2):
 			ret = true
 	return ret
 
-func _on_Main_pressed():
-	var _ret = get_tree().change_scene("res://main.tscn")
 
-func on_stock2_clicked(card):
-	var value = card.get_value()
-	var suit = card.get_suit()
-	print("Stock clicked. value:", value, " suit:", suit)
+# Detect if the game should be ended win or lose
+func detect_end():
+	if _tableau.size() <= 0:
+		$ScoreOverlay.show_win()
 
-func on_tableau_clicked(card):
-	var value = card.get_value()
-	var suit = card.get_suit()
-	print("Tableau clicked. value:", value, " suit:", suit)
-
-	var current_value = $Current.get_value()
-	if is_match(value, current_value):
-		print("It matches")
-		
-		$Current.set_cardnum(card.get_cardnum())
-		remove_card(card)
-		$ScoreOverlay.update_score(5)
+	if _stock.size() <= 0:
+		if !any_moves():
+			$ScoreOverlay.show_end()
 
 
-func on_stock_clicked(card):
-	$Current.visible = true
-	print("Move the top card from the stock to current")
-	if _stock.size() > 0:
-		var stock_card = _stock.pop_back()
-		var idx = stock_card.get_cardnum()
-		print("value = ", stock_card.get_value(), " suit=", stock_card.get_suit(),
-				" idx=", idx)
-		remove_card(stock_card)
-		$Current.set_cardnum(idx)
-		$ScoreOverlay.update_remain(-1)
+# Return true if there are any moves available
+func any_moves():
+	var cards = get_selectable_cards()
+	var cardValue
+	var stockValue = $Stock.get_cardnum()
 	
+	for i in range(0, cards.size()):
+		cardValue = cards[i].get_cardnum()
+		if is_match(stockValue, cardValue):
+			return true
+
+	return false
+
+
+# Return all the tableau cards that can be selected
+func get_selectable_cards():
+	var card
+	var cards = []
+
+	for i in range(0, _tableau.size()):
+		card = _tableau[i]
+		if card.is_on_top():
+			cards.append(card)
+	
+	return cards
+
+
+# Create a new card instance
+func create_card(idx, pos):
+	var new_card = Card.instance()
+	new_card.set_cardnum(idx)
+	new_card.position = pos
+	return new_card
+
+
 func remove_card(card):
 	card.position = Vector2(STOCK_LEFT, STOCK_TOP)
 	card.z_index = 200
 
+
+# Clean up any signals in the deck. This is needed because a specific card may be on
+# tableau one game and stock the next. 
+func disconnect_deck_signals():
+	var card
+	var _err
+	var connections
+	for i in range(0, _deck.size()):
+		card = _deck[i]
+		connections = card.get_signal_connection_list("card_clicked")
+		
+		for j in range(0, connections.size()):
+			var connection = connections[j]
+			_err = card.disconnect(connection["signal"], 
+					self, connection["method"])
+
+
+
 func _on_New_pressed():
-	print("Should start new game")
-	setup_screen()
-	pass # Replace with function body.
+	start_game()

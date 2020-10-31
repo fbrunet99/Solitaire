@@ -8,6 +8,10 @@ var remain = 0
 func _ready():
 	pass # Replace with function body.
 
+func clear_messages():
+	$GameOverMessage.visible = false
+	$WinMessage.visible = false
+
 
 func set_score(new_score):
 	score = new_score
@@ -23,7 +27,15 @@ func set_remain(new_remain):
 	remain = new_remain
 	$Remain.text = str(remain)
 
+
 func update_remain(add_remain):
 	remain += add_remain
 	$Remain.text = str(remain)
 
+
+func show_win():
+	$WinMessage.visible = true
+
+
+func show_end():
+	$GameOverMessage.visible = true
