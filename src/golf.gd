@@ -2,7 +2,7 @@ extends Node2D
 
 var Card = preload("res://card.tscn")
 
-const COL_WIDTH = 100
+const COL_WIDTH = 110
 const DECK_SIZE = 52
 const ROW_HEIGHT = 50
 const STOCK_LEFT = 1900
@@ -10,12 +10,13 @@ const STOCK_TOP = 500
 const TABLEAU_LEFT = 190
 const TABLEAU_RIGHT = 800
 const TABLEAU_SIZE = 35
-const TABLEAU_TOP = 130
+const TABLEAU_TOP = 100
 
 var _deck = []
 var _stock = []
 
 func _ready():
+	randomize()
 	$Stock.connect("card_clicked", self, "on_stock_clicked")
 	var pos = Vector2(300, 0)
 	var card
