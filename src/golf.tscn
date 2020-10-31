@@ -40,6 +40,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Undo" type="Button" parent="."]
+margin_left = 800.0
+margin_top = 552.0
+margin_right = 874.0
+margin_bottom = 584.0
+hint_tooltip = "End current game and start a new one"
+text = "Undo"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Stock" parent="." instance=ExtResource( 2 )]
 position = Vector2( 736, 512 )
 
@@ -49,3 +60,4 @@ position = Vector2( 400, 512 )
 [node name="ScoreOverlay" parent="." instance=ExtResource( 4 )]
 [connection signal="pressed" from="Main" to="." method="_on_Main_pressed"]
 [connection signal="pressed" from="New" to="." method="_on_New_pressed"]
+[connection signal="pressed" from="Undo" to="." method="_on_undo_pressed"]

@@ -31,8 +31,7 @@ func is_face_down() -> bool:
 
 # Set this card as a back with no value
 func make_placeholder(num: int):
-	$CardSprite.frame = num + (2 + CardInfo.DECK_SIZE)
-	_cur_idx = -1
+	_cur_idx = num + (2 + CardInfo.DECK_SIZE)
 	update_image()
 
 
@@ -99,8 +98,10 @@ func update_image():
 	if is_face_down():
 		$CardSprite.frame = _cur_back
 	else:
-		if _cur_idx > 0 and _cur_idx <= CardInfo.DECK_SIZE:
-			$CardSprite.frame = _cur_idx
+		$CardSprite.frame = _cur_idx
+		
+	visible = false if _cur_idx <= 0 else true
+
 
 
 

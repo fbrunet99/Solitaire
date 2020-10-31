@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "CardInfo",
 "language": "GDScript",
 "path": "res://card_info.gd"
+}, {
+"base": "Object",
+"class": "CardState",
+"language": "GDScript",
+"path": "res://card_state.gd"
 } ]
 _global_script_class_icons={
-"CardInfo": ""
+"CardInfo": "",
+"CardState": ""
 }
 
 [application]

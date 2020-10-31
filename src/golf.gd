@@ -1,12 +1,13 @@
 extends Node2D
 
 var Card = preload("res://card.tscn")
+var CardState = preload("res://card_state.gd")
 
 const COL_WIDTH = 110
 const DECK_SIZE = 52
 const ROW_HEIGHT = 50
 const STOCK_LEFT = 1900
-const STOCK_TOP = 500
+const STOCK_TOP = 400
 const TABLEAU_LEFT = 190
 const TABLEAU_RIGHT = 800
 const TABLEAU_SIZE = 35
@@ -15,6 +16,7 @@ const TABLEAU_TOP = 100
 var _deck = []
 var _stock = []
 var _tableau = []
+var _undo = []
 
 func _ready():
 	randomize()
@@ -47,6 +49,7 @@ func deal_cards():
 	_stock.clear()
 	_tableau.clear()
 	$Stock.make_placeholder(9)
+	$Stock.visible = true
 	
 	disconnect_deck_signals()
 	
@@ -96,6 +99,8 @@ func on_stock_clicked(_card):
 	if _stock.size() > 0:
 		var stock_card = _stock.pop_back()
 		var idx = stock_card.get_cardnum()
+		store_move(stock_card, CardInfo.TYPE_STOCK, $Current.get_cardnum())
+		
 		print("value = ", stock_card.get_value(), " suit=", stock_card.get_suit(),
 				" idx=", idx)
 		remove_card(stock_card)
@@ -103,22 +108,27 @@ func on_stock_clicked(_card):
 		$ScoreOverlay.update_remain(-1)
 		
 		detect_end()
+		
+	if _stock.size() == 0:
+		$Stock.visible = false
 
 
 # Remove a card from the tableau if it can be done
 func on_tableau_clicked(card):
 	var value = card.get_value()
 	var suit = card.get_suit()
-	print("Tableau clicked. value:", value, " suit:", suit)
 
 	var current_value = $Current.get_value()
 	if is_match(value, current_value):
 		print("It matches")
+		store_move(card, CardInfo.TYPE_TABLEAU, $Current.get_cardnum())
 		
 		$Current.set_cardnum(card.get_cardnum())
 		remove_card(card)
 		_tableau.erase(card)
 		$ScoreOverlay.update_score(5)
+	
+	detect_end()
 
 
 # Return true if the values given are a golf match
@@ -150,10 +160,10 @@ func detect_end():
 func any_moves():
 	var cards = get_selectable_cards()
 	var cardValue
-	var stockValue = $Stock.get_cardnum()
+	var stockValue = $Current.get_value()
 	
 	for i in range(0, cards.size()):
-		cardValue = cards[i].get_cardnum()
+		cardValue = cards[i].get_value()
 		if is_match(stockValue, cardValue):
 			return true
 
@@ -182,8 +192,8 @@ func create_card(idx, pos):
 
 
 func remove_card(card):
-	card.position = Vector2(STOCK_LEFT, STOCK_TOP)
-	card.z_index = 200
+	card.position = Vector2(STOCK_LEFT, 100)
+#	card.z_index = 200
 
 
 # Clean up any signals in the deck. This is needed because a specific card may be on
@@ -202,6 +212,31 @@ func disconnect_deck_signals():
 					self, connection["method"])
 
 
+func store_move(card, card_type, old_num):
+	var card_state = CardState.new(card, card.position, card_type, old_num)
+	_undo.push_back(card_state)
+	print("store value:", card.get_value(), " old:", old_num)
+	
 
 func _on_New_pressed():
 	start_game()
+
+
+func _on_undo_pressed():
+	if _undo.size() > 0:
+		var popped = _undo.pop_back()
+		var card = popped.get_card()
+		if popped.get_type() == CardInfo.TYPE_STOCK:
+#			$Stock.set_cardnum(card.get_cardnum())
+			_stock.push_back(card)
+			$Current.set_cardnum(popped.get_oldnum())
+			$ScoreOverlay.update_remain(1)
+			$ScoreOverlay.clear_messages()
+			$Stock.visible = true
+		else:
+			_tableau.push_back(card)
+			$Current.set_cardnum(popped.get_oldnum())
+			card.position = popped.get_position()
+			$ScoreOverlay.update_score(-5)
+			$ScoreOverlay.clear_messages()
+			
