@@ -38,8 +38,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Waste" parent="." instance=ExtResource( 2 )]
-position = Vector2( 564, 504 )
+[node name="Stock" parent="." instance=ExtResource( 2 )]
+position = Vector2( 660, 504 )
+
+[node name="Current" parent="." instance=ExtResource( 2 )]
+position = Vector2( 386, 504 )
 
 [node name="ScoreOverlay" parent="." instance=ExtResource( 4 )]
 [connection signal="pressed" from="Main" to="." method="_on_Main_pressed"]
