@@ -18,10 +18,16 @@ _global_script_classes=[ {
 "class": "CardState",
 "language": "GDScript",
 "path": "res://card_state.gd"
+}, {
+"base": "Node",
+"class": "CardTable",
+"language": "GDScript",
+"path": "res://card_table.gd"
 } ]
 _global_script_class_icons={
 "CardInfo": "",
-"CardState": ""
+"CardState": "",
+"CardTable": ""
 }
 
 [application]

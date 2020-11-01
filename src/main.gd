@@ -22,3 +22,7 @@ func _on_golf_pressed():
 
 func _on_exit_pressed():
 	get_tree().quit()
+
+
+func _on_pyramid_pressed():
+	var _ret = get_tree().change_scene("res://pyramid.tscn")

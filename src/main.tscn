@@ -14,12 +14,23 @@ __meta__ = {
 }
 
 [node name="Golf" type="Button" parent="."]
-margin_left = 72.0
-margin_top = 56.0
-margin_right = 370.0
-margin_bottom = 209.0
+margin_left = 42.0
+margin_top = 54.0
+margin_right = 340.0
+margin_bottom = 207.0
 custom_fonts/font = ExtResource( 2 )
 text = "Golf"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Pyramid" type="Button" parent="."]
+margin_left = 365.0
+margin_top = 55.0
+margin_right = 663.0
+margin_bottom = 208.0
+custom_fonts/font = ExtResource( 2 )
+text = "Pyramid"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -35,4 +46,5 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="pressed" from="Golf" to="." method="_on_golf_pressed"]
+[connection signal="pressed" from="Pyramid" to="." method="_on_pyramid_pressed"]
 [connection signal="pressed" from="Exit" to="." method="_on_exit_pressed"]
