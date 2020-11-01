@@ -30,6 +30,10 @@ config/name="Solitaire"
 run/main_scene="res://main.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Global="*res://global.gd"
+
 [display]
 
 window/stretch/mode="2d"

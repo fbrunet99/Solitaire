@@ -63,6 +63,8 @@ position = Vector2( 400, 512 )
 [node name="StockTween" type="Tween" parent="."]
 
 [node name="TableauTween" type="Tween" parent="."]
+
+[node name="ShuffleTween" type="Tween" parent="."]
 [connection signal="pressed" from="Main" to="." method="_on_Main_pressed"]
 [connection signal="pressed" from="New" to="." method="_on_New_pressed"]
 [connection signal="pressed" from="Undo" to="." method="_on_undo_pressed"]

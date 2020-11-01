@@ -50,11 +50,14 @@ func deal_cards():
 	_stock.clear()
 	_tableau.clear()
 	$Stock.make_placeholder(9)
-	$Stock.visible = true
+	$Stock.visible = false
+	$Current.visible = false
 	
 	disconnect_deck_signals()
 	
 	_deck.shuffle()
+	for i in range(0, _deck.size()):
+		_deck[i].position = $Stock.position
 	
 	var x = TABLEAU_LEFT - COL_WIDTH
 	var y = TABLEAU_TOP
@@ -70,8 +73,13 @@ func deal_cards():
 		card.set_face_down(false)
 		card.z_index = i
 		card.connect("card_clicked", self, "on_tableau_clicked")
-		card.position = Vector2(x, y)
-		
+		$ShuffleTween.interpolate_property(card,
+			"position", card.position,
+			Vector2(x,y), 0.3, Tween.TRANS_QUINT, Tween.EASE_OUT)
+		$ShuffleTween.start()
+		yield(get_tree().create_timer(0.02), "timeout")
+
+
 	x = STOCK_LEFT
 	y = STOCK_TOP 
 
@@ -99,7 +107,6 @@ func _on_Main_pressed():
 func on_stock_clicked(_card):
 	if _stock.size() > 0:
 		var stock_card = _stock.pop_back()
-		var idx = stock_card.get_cardnum()
 		store_move(stock_card, CardInfo.TYPE_STOCK, $Current.get_cardnum())
 		$ScoreOverlay.update_remain(-1)
 		$StockTween.interpolate_property(stock_card,
@@ -108,40 +115,39 @@ func on_stock_clicked(_card):
 		stock_card.set_face_down(false)
 		$StockTween.start()
 		
-		detect_end()
-		
+
 	if _stock.size() == 0:
 		$Stock.visible = false
 
 
-func _on_StockTween_tween_completed(card, key):
+func _on_StockTween_tween_completed(card, _key):
 	
 	$Current.set_cardnum(card.get_cardnum())
 	$Current.visible = true
 	remove_card(card)
+	detect_end()
 
 # Remove a card from the tableau if it can be done
 func on_tableau_clicked(card):
 	var value = card.get_value()
-	var suit = card.get_suit()
+#	var suit = card.get_suit()
 
 	var current_value = $Current.get_value()
 	if is_match(value, current_value):
-		print("It matches")
 		store_move(card, CardInfo.TYPE_TABLEAU, $Current.get_cardnum())
 		$TableauTween.interpolate_property(card,
 			"position", card.position,
 			$Current.position, 0.3, Tween.TRANS_QUINT, Tween.EASE_IN)
 		$TableauTween.start()
-		
-	
-	detect_end()
 
-func _on_TableauTween_tween_completed(card, key):
+
+func _on_TableauTween_tween_completed(card, _key):
 	$Current.set_cardnum(card.get_cardnum())
 	remove_card(card)
 	_tableau.erase(card)
 	$ScoreOverlay.update_score(5)
+	detect_end()
+
 
 # Return true if the values given are a golf match
 func is_match(value1, value2):
