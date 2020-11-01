@@ -6,12 +6,13 @@ var CardState = preload("res://card_state.gd")
 const COL_WIDTH = 110
 const DECK_SIZE = 52
 const ROW_HEIGHT = 50
-const STOCK_LEFT = 1900
-const STOCK_TOP = 400
+const STOCK_LEFT = 800
+const STOCK_TOP = 500
 const TABLEAU_LEFT = 190
 const TABLEAU_RIGHT = 800
 const TABLEAU_SIZE = 35
 const TABLEAU_TOP = 100
+const DISCARD_LEFT = 1150
 
 var _deck = []
 var _stock = []
@@ -76,8 +77,9 @@ func deal_cards():
 
 	for i in range(TABLEAU_SIZE, DECK_SIZE):
 		card = _deck[i]
+		card.set_face_down(true)
 		card.connect("card_clicked", self, "on_stock_clicked")
-		card.position = Vector2(x, y)
+		card.position = $Stock.position # Vector2(x, y)
 		card.z_index = i
 		_stock.push_back(card)
 	
@@ -95,23 +97,28 @@ func _on_Main_pressed():
 
 # If possible get another card from the stock
 func on_stock_clicked(_card):
-	$Current.visible = true
 	if _stock.size() > 0:
 		var stock_card = _stock.pop_back()
 		var idx = stock_card.get_cardnum()
 		store_move(stock_card, CardInfo.TYPE_STOCK, $Current.get_cardnum())
-		
-		print("value = ", stock_card.get_value(), " suit=", stock_card.get_suit(),
-				" idx=", idx)
-		remove_card(stock_card)
-		$Current.set_cardnum(idx)
 		$ScoreOverlay.update_remain(-1)
+		$StockTween.interpolate_property(stock_card,
+			"position", stock_card.position,
+			$Current.position, 0.3, Tween.TRANS_BACK, Tween.EASE_IN)
+		stock_card.set_face_down(false)
+		$StockTween.start()
 		
 		detect_end()
 		
 	if _stock.size() == 0:
 		$Stock.visible = false
 
+
+func _on_StockTween_tween_completed(card, key):
+	
+	$Current.set_cardnum(card.get_cardnum())
+	$Current.visible = true
+	remove_card(card)
 
 # Remove a card from the tableau if it can be done
 func on_tableau_clicked(card):
@@ -192,7 +199,7 @@ func create_card(idx, pos):
 
 
 func remove_card(card):
-	card.position = Vector2(STOCK_LEFT, 100)
+	card.position = Vector2(DISCARD_LEFT, 100)
 #	card.z_index = 200
 
 
@@ -229,6 +236,8 @@ func _on_undo_pressed():
 		if popped.get_type() == CardInfo.TYPE_STOCK:
 #			$Stock.set_cardnum(card.get_cardnum())
 			_stock.push_back(card)
+			card.position = $Stock.position
+			card.set_face_down(true)
 			$Current.set_cardnum(popped.get_oldnum())
 			$ScoreOverlay.update_remain(1)
 			$ScoreOverlay.clear_messages()
@@ -240,3 +249,5 @@ func _on_undo_pressed():
 			$ScoreOverlay.update_score(-5)
 			$ScoreOverlay.clear_messages()
 			
+
+

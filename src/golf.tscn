@@ -53,11 +53,15 @@ __meta__ = {
 
 [node name="Stock" parent="." instance=ExtResource( 2 )]
 position = Vector2( 736, 512 )
+z_index = 1
 
 [node name="Current" parent="." instance=ExtResource( 2 )]
 position = Vector2( 400, 512 )
 
 [node name="ScoreOverlay" parent="." instance=ExtResource( 4 )]
+
+[node name="StockTween" type="Tween" parent="."]
 [connection signal="pressed" from="Main" to="." method="_on_Main_pressed"]
 [connection signal="pressed" from="New" to="." method="_on_New_pressed"]
 [connection signal="pressed" from="Undo" to="." method="_on_undo_pressed"]
+[connection signal="tween_completed" from="StockTween" to="." method="_on_StockTween_tween_completed"]
