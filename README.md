@@ -10,4 +10,4 @@ TODO: Create executables for Windows and Mac
 
  ## Games
  ### Golf
- ![Golf](/docs/golf-play.gif
+ ![Golf](/docs/golf-play.gif)
