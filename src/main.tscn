@@ -6,13 +6,14 @@
 [node name="Main" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_top = -1.0
+margin_bottom = -1.0
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Golf" type="Button" parent="."]
-modulate = Color( 0.968627, 0.968627, 0.968627, 1 )
 margin_left = 72.0
 margin_top = 56.0
 margin_right = 370.0

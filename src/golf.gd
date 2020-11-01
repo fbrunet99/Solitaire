@@ -75,7 +75,7 @@ func deal_cards():
 		card.connect("card_clicked", self, "on_tableau_clicked")
 		$ShuffleTween.interpolate_property(card,
 			"position", card.position,
-			Vector2(x,y), 0.3, Tween.TRANS_QUINT, Tween.EASE_OUT)
+			Vector2(x,y), 0.3, Tween.TRANS_BACK, Tween.EASE_OUT)
 		$ShuffleTween.start()
 		yield(get_tree().create_timer(0.02), "timeout")
 
