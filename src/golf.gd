@@ -129,14 +129,19 @@ func on_tableau_clicked(card):
 	if is_match(value, current_value):
 		print("It matches")
 		store_move(card, CardInfo.TYPE_TABLEAU, $Current.get_cardnum())
+		$TableauTween.interpolate_property(card,
+			"position", card.position,
+			$Current.position, 0.3, Tween.TRANS_QUINT, Tween.EASE_IN)
+		$TableauTween.start()
 		
-		$Current.set_cardnum(card.get_cardnum())
-		remove_card(card)
-		_tableau.erase(card)
-		$ScoreOverlay.update_score(5)
 	
 	detect_end()
 
+func _on_TableauTween_tween_completed(card, key):
+	$Current.set_cardnum(card.get_cardnum())
+	remove_card(card)
+	_tableau.erase(card)
+	$ScoreOverlay.update_score(5)
 
 # Return true if the values given are a golf match
 func is_match(value1, value2):
