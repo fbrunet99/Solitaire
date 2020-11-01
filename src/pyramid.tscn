@@ -1,17 +1,29 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://pyramid.gd" type="Script" id=1]
 [ext_resource path="res://score-overlay.tscn" type="PackedScene" id=2]
 [ext_resource path="res://card.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/felt-back-blue.png" type="Texture" id=4]
+[ext_resource path="res://solitaire_theme.tres" type="Theme" id=5]
 
 [node name="Pyramid" type="Node2D"]
 script = ExtResource( 1 )
+
+[node name="TextureRect" type="TextureRect" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+texture = ExtResource( 4 )
+stretch_mode = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Main" type="Button" parent="."]
 margin_left = 8.0
 margin_top = 8.0
 margin_right = 80.0
 margin_bottom = 40.0
+theme = ExtResource( 5 )
 text = "Main"
 __meta__ = {
 "_edit_use_anchors_": false

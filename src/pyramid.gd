@@ -47,7 +47,12 @@ func deal_cards():
 	var y = TABLEAU_TOP
 	var row_item = 1
 	var row_max = 1
-	
+
+	_deck.shuffle()
+	for i in range(0, _deck.size()):
+		_deck[i].position = $Stock.position
+
+
 	for i in range(0, TABLEAU_SIZE):
 		if row_item > row_max:
 			x = TABLEAU_LEFT - (COL_WIDTH/2 * row_max)
@@ -56,7 +61,6 @@ func deal_cards():
 			y += ROW_HEIGHT
 
 		row_item += 1
-
 		
 		card = _deck[i]
 		_tableau.append(card)
@@ -86,4 +90,4 @@ func _on_Main_pressed():
 
 
 func _on_New_pressed():
-	pass # Replace with function body.
+	start_game()
