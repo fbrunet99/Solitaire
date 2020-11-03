@@ -9,11 +9,7 @@ const TABLEAU_LEFT = 190
 const TABLEAU_RIGHT = 800
 const TABLEAU_SIZE = 35
 const TABLEAU_TOP = 100
-const DISCARD_LEFT = 1150
 
-var _stock = []
-var _tableau = []
-var _undo = []
 
 func _ready():
 	randomize()
@@ -45,11 +41,12 @@ func start_game():
 func deal_cards():
 	_stock.clear()
 	_tableau.clear()
+	disconnect_deck_signals()
+	
 	$Stock.make_placeholder(9)
 	$Stock.visible = false
 	$Current.visible = false
 	
-	disconnect_deck_signals()
 	
 	_deck.shuffle()
 	for i in range(0, _deck.size()):
@@ -191,19 +188,9 @@ func get_selectable_cards():
 	return cards
 
 
-
-
-
 func remove_card(card):
 	card.position = Vector2(DISCARD_LEFT, 100)
 #	card.z_index = 200
-
-
-
-func store_move(card, card_type, old_num):
-	var card_state = CardState.new(card, card.position, card_type, old_num)
-	_undo.push_back(card_state)
-	print("store value:", card.get_value(), " old:", old_num)
 
 
 # Go back to the main menu

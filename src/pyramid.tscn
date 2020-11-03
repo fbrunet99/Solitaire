@@ -12,6 +12,7 @@ script = ExtResource( 1 )
 [node name="TextureRect" type="TextureRect" parent="."]
 margin_right = 1024.0
 margin_bottom = 600.0
+mouse_filter = 2
 texture = ExtResource( 4 )
 stretch_mode = 2
 __meta__ = {
@@ -44,7 +45,33 @@ __meta__ = {
 [node name="Stock" parent="." instance=ExtResource( 3 )]
 position = Vector2( 744, 528 )
 scale = Vector2( 0.5, 0.5 )
+z_index = 1
+
+[node name="Foundation1" parent="." instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 612, 528 )
+scale = Vector2( 0.5, 0.5 )
+
+[node name="Foundation2" parent="." instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 508, 528 )
+scale = Vector2( 0.5, 0.5 )
+
+[node name="Foundation3" parent="." instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 401, 528 )
+scale = Vector2( 0.5, 0.5 )
 
 [node name="ShuffleTween" type="Tween" parent="."]
+
+[node name="StockTween" type="Tween" parent="."]
+
+[node name="TableauTween" type="Tween" parent="."]
+
+[node name="FoundationTween" type="Tween" parent="."]
 [connection signal="pressed" from="Main" to="." method="_on_Main_pressed"]
 [connection signal="pressed" from="New" to="." method="_on_New_pressed"]
+[connection signal="card_clicked" from="Foundation1" to="." method="_on_foundation1_clicked"]
+[connection signal="card_clicked" from="Foundation2" to="." method="_on_foundation2_clicked"]
+[connection signal="card_clicked" from="Foundation3" to="." method="_on_foundation3_clicked"]
+[connection signal="tween_completed" from="StockTween" to="." method="_on_StockTween_tween_completed"]

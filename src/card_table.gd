@@ -4,7 +4,12 @@ class_name CardTable
 var Card = preload("res://card.tscn")
 var CardState = preload("res://card_state.gd")
 
+const DISCARD_LEFT = 1150
+
 var _deck = []
+var _undo = []
+var _stock = []
+var _tableau = []
 
 # Create a new card instance
 func create_card(idx, pos):
@@ -12,7 +17,17 @@ func create_card(idx, pos):
 	new_card.set_cardnum(idx)
 	new_card.position = pos
 	return new_card
-	
+
+
+func remove_card(card):
+	card.position = Vector2(DISCARD_LEFT, 100)
+
+
+func store_move(card, card_type, old_num):
+	var card_state = CardState.new(card, card.position, card_type, old_num)
+	_undo.push_back(card_state)
+	print("store value:", card.get_value(), " old:", old_num)
+
 
 # Clean up any signals in the deck. This is needed because a specific card may be on
 # tableau one game and stock the next. 
