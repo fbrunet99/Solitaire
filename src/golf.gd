@@ -175,18 +175,6 @@ func any_moves():
 	return false
 
 
-# Return all the tableau cards that can be selected
-func get_selectable_cards():
-	var card
-	var cards = []
-
-	for i in range(0, _tableau.size()):
-		card = _tableau[i]
-		if card.is_on_top():
-			cards.append(card)
-	
-	return cards
-
 
 func remove_card(card):
 	card.position = Vector2(DISCARD_LEFT, 100)

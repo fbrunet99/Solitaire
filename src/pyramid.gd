@@ -38,6 +38,7 @@ func start_game():
 	$Foundation3.visible = false
 	deal_cards(false)
 
+
 # Shuffle the deck and move the cards to the tableau and stock
 func deal_cards(restart):
 	_stock.clear()
@@ -128,7 +129,6 @@ func move_stock(foundation):
 
 # Remove a card from the tableau if it can be done
 func on_tableau_clicked(card):
-	print("tableau clicked")
 	var value = card.get_value()
 #	var suit = card.get_suit()
 
@@ -140,13 +140,15 @@ func on_tableau_clicked(card):
 			Vector2(-100, 0), 0.3, Tween.TRANS_QUINT, Tween.EASE_IN)
 		$TableauTween.start()
 		$ScoreOverlay.update_score(5)
+	else:
+		var available = gather_available_cards(card)
+		for i in range(0, available.size()):
+			var other = available[i]
+			if is_match(card.get_value(), other.get_value()):
+				remove_card(card)
+				remove_card(other)
+				print("match found")
 
-#	if is_match(value, current_value):
-#		store_move(card, CardInfo.TYPE_TABLEAU, $Current.get_cardnum())
-#		$TableauTween.interpolate_property(card,
-#			"position", card.position,
-#			$Current.position, 0.3, Tween.TRANS_QUINT, Tween.EASE_IN)
-#		$TableauTween.start()
 
 	if _stock.size() == 0:
 		$Stock.visible = false
@@ -163,7 +165,7 @@ func _on_StockTween_tween_completed(card, key):
 		$Foundation3.set_cardnum(card.get_cardnum())
 		$Foundation3.visible = true
 		
-	remove_card(card)
+#	remove_card(card)
 #	detect_end()
 
 
@@ -183,10 +185,23 @@ func move_foundation(card):
 		store_move(card, CardInfo.TYPE_STOCK, card.get_cardnum())
 		$FoundationTween.interpolate_property(card,
 			"position", card.position,
-			Vector2(-100, 0), 0.3, Tween.TRANS_QUINT, Tween.EASE_IN)
+			Vector2(-100, 0), 1.3, Tween.TRANS_QUINT, Tween.EASE_IN)
 		$FoundationTween.start()
 		$ScoreOverlay.update_score(5)
+
+
+# Get all the cards that can be matched excluding the given card
+func gather_available_cards(card):
+	var available_cards = get_selectable_cards()
+	available_cards.append($Foundation1)
+	available_cards.append($Foundation2)
+	available_cards.append($Foundation3)
 	
+	available_cards.erase(card)
+	
+	return available_cards
+
+
 
 func _on_Main_pressed():
 	var _ret = get_tree().change_scene("res://main.tscn")

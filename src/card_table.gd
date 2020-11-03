@@ -29,6 +29,19 @@ func store_move(card, card_type, old_num):
 	print("store value:", card.get_value(), " old:", old_num)
 
 
+# Return all the tableau cards that can be selected
+func get_selectable_cards():
+	var card
+	var cards = []
+
+	for i in range(0, _tableau.size()):
+		card = _tableau[i]
+		if card.is_on_top():
+			cards.append(card)
+	
+	return cards
+
+
 # Clean up any signals in the deck. This is needed because a specific card may be on
 # tableau one game and stock the next. 
 func disconnect_deck_signals():
