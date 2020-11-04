@@ -50,10 +50,15 @@ func disconnect_deck_signals():
 	var connections
 	for i in range(0, _deck.size()):
 		card = _deck[i]
-		connections = card.get_signal_connection_list("card_clicked")
-		
-		for j in range(0, connections.size()):
-			var connection = connections[j]
-			_err = card.disconnect(connection["signal"], 
-					self, connection["method"])
+		disconnect_card_signals(card)
+
+
+# Remove all signals from the card
+func disconnect_card_signals(card):
+	var _err
+	var connections = card.get_signal_connection_list("card_clicked")
+	for j in range(0, connections.size()):
+		var connection = connections[j]
+		_err = card.disconnect(connection["signal"], 
+				self, connection["method"])
 

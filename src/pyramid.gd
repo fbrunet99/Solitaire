@@ -9,6 +9,7 @@ const TABLEAU_TOP = 90
 const CARD_SCALE = Vector2(0.5, 0.5)
 
 var _cur_foundation
+var _stock_clicks
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -42,6 +43,7 @@ func start_game():
 # Shuffle the deck and move the cards to the tableau and stock
 func deal_cards(restart):
 	_stock.clear()
+	_stock_clicks = 0
 	_tableau.clear()
 	disconnect_deck_signals()
 
@@ -109,6 +111,7 @@ func create_card(idx, pos):
 
 
 func on_stock_clicked(_card):
+	_stock_clicks += 1
 	move_stock($Foundation1)
 	move_stock($Foundation2)
 	move_stock($Foundation3)
@@ -155,18 +158,11 @@ func on_tableau_clicked(card):
 
 
 func _on_StockTween_tween_completed(card, key):
-	if card.position == $Foundation1.position:
-		$Foundation1.set_cardnum(card.get_cardnum())
-		$Foundation1.visible = true
-	elif card.position == $Foundation2.position:
-		$Foundation2.set_cardnum(card.get_cardnum())
-		$Foundation2.visible = true
-	else:
-		$Foundation3.set_cardnum(card.get_cardnum())
-		$Foundation3.visible = true
-		
-#	remove_card(card)
-#	detect_end()
+	disconnect_card_signals(card)
+	card.connect("card_clicked", self, "on_tableau_clicked")
+	card.z_index = _stock_clicks
+	_tableau.push_back(card)
+	
 
 
 func _on_foundation1_clicked(card):
@@ -193,14 +189,10 @@ func move_foundation(card):
 # Get all the cards that can be matched excluding the given card
 func gather_available_cards(card):
 	var available_cards = get_selectable_cards()
-	available_cards.append($Foundation1)
-	available_cards.append($Foundation2)
-	available_cards.append($Foundation3)
 	
 	available_cards.erase(card)
 	
 	return available_cards
-
 
 
 func _on_Main_pressed():
