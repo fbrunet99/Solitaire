@@ -138,23 +138,28 @@ func on_tableau_clicked(card):
 	var current_value = card.get_value()
 	if is_match(current_value, 0):
 		store_move(card, CardInfo.TYPE_TABLEAU, card.get_cardnum())
-		$TableauTween.interpolate_property(card,
-			"position", card.position,
-			Vector2(-100, 0), 0.3, Tween.TRANS_QUINT, Tween.EASE_IN)
-		$TableauTween.start()
-		$ScoreOverlay.update_score(5)
+		remove_tableau_match(card)
 	else:
 		var available = gather_available_cards(card)
 		for i in range(0, available.size()):
 			var other = available[i]
 			if is_match(card.get_value(), other.get_value()):
-				remove_card(card)
-				remove_card(other)
-				print("match found")
+				remove_tableau_match(card)
+				remove_tableau_match(other)
+				break
 
 
 	if _stock.size() == 0:
 		$Stock.visible = false
+
+
+func remove_tableau_match(card):
+	$TableauTween.interpolate_property(card,
+		"position", card.position,
+		Vector2(-100, 0), 0.3, Tween.TRANS_QUINT, Tween.EASE_IN)
+	$TableauTween.start()
+	$ScoreOverlay.update_score(5)
+	_tableau.erase(card)
 
 
 func _on_StockTween_tween_completed(card, key):
