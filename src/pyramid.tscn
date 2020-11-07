@@ -40,6 +40,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Undo" type="Button" parent="."]
+margin_left = 824.0
+margin_top = 544.0
+margin_right = 896.0
+margin_bottom = 576.0
+text = "Undo"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="ScoreOverlay" parent="." instance=ExtResource( 2 )]
 
 [node name="Stock" parent="." instance=ExtResource( 3 )]
@@ -71,6 +81,7 @@ scale = Vector2( 0.5, 0.5 )
 [node name="FoundationTween" type="Tween" parent="."]
 [connection signal="pressed" from="Main" to="." method="_on_Main_pressed"]
 [connection signal="pressed" from="New" to="." method="_on_New_pressed"]
+[connection signal="pressed" from="Undo" to="." method="_on_Undo_pressed"]
 [connection signal="card_clicked" from="Foundation1" to="." method="_on_foundation1_clicked"]
 [connection signal="card_clicked" from="Foundation2" to="." method="_on_foundation2_clicked"]
 [connection signal="card_clicked" from="Foundation3" to="." method="_on_foundation3_clicked"]

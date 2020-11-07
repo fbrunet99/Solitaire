@@ -110,21 +110,20 @@ func create_card(idx, pos):
 	return new_card
 
 
-func on_stock_clicked(_card):
+func on_stock_clicked(card):
 	_stock_clicks += 1
-	move_stock($Foundation1)
-	move_stock($Foundation2)
-	move_stock($Foundation3)
+	move_stock(card)
 
 
-func move_stock(foundation):
+func move_stock(card):
 	var stock_card
 
 	if _stock.size() > 0:
 		stock_card = _stock.pop_back()
+		store_move(card, CardInfo.TYPE_STOCK, card.get_cardnum())
 		$StockTween.interpolate_property(stock_card,
 			"position", stock_card.position,
-			foundation.position, 0.3, Tween.TRANS_BACK, Tween.EASE_IN)
+			$Foundation1.position, 0.3, Tween.TRANS_BACK, Tween.EASE_IN)
 		stock_card.set_face_down(false)
 		$StockTween.start()
 		$ScoreOverlay.update_remain(-1)
@@ -132,9 +131,6 @@ func move_stock(foundation):
 
 # Remove a card from the tableau if it can be done
 func on_tableau_clicked(card):
-	var value = card.get_value()
-#	var suit = card.get_suit()
-
 	var current_value = card.get_value()
 	if is_match(current_value, 0):
 		store_move(card, CardInfo.TYPE_TABLEAU, card.get_cardnum())
@@ -144,7 +140,9 @@ func on_tableau_clicked(card):
 		for i in range(0, available.size()):
 			var other = available[i]
 			if is_match(card.get_value(), other.get_value()):
+				store_move(card, CardInfo.TYPE_TABLEAU, card.get_cardnum())
 				remove_tableau_match(card)
+				store_move(other, CardInfo.TYPE_TABLEAU, other.get_cardnum())
 				remove_tableau_match(other)
 				break
 
@@ -162,7 +160,7 @@ func remove_tableau_match(card):
 	_tableau.erase(card)
 
 
-func _on_StockTween_tween_completed(card, key):
+func _on_StockTween_tween_completed(card, _key):
 	disconnect_card_signals(card)
 	card.connect("card_clicked", self, "on_tableau_clicked")
 	card.z_index = _stock_clicks
@@ -183,7 +181,6 @@ func _on_foundation3_clicked(card):
 func move_foundation(card):
 	var current_value = card.get_value()
 	if is_match(current_value, 0):
-		store_move(card, CardInfo.TYPE_STOCK, card.get_cardnum())
 		$FoundationTween.interpolate_property(card,
 			"position", card.position,
 			Vector2(-100, 0), 1.3, Tween.TRANS_QUINT, Tween.EASE_IN)
@@ -207,3 +204,19 @@ func _on_Main_pressed():
 func _on_New_pressed():
 	start_game()
 
+func restore_stock(card_state):
+	var card = card_state.get_card()
+	if card_state.get_type() == CardInfo.TYPE_STOCK:
+		_stock.push_back(card)
+		card.position = card_state.get_position()
+		card.set_face_down(true)
+		# TODO: Use the old position not the cur position
+#		card.z_index = card_state.get_z_index()
+	else:
+		pass
+	
+
+func _on_Undo_pressed():
+	if _undo.size() > 0:
+		var popped = _undo.pop_back()
+		restore_stock(popped)

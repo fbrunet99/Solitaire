@@ -8,12 +8,14 @@ var _card
 var _position
 var _card_type
 var _old_cardnum: int
+var _z_index: int
 
 func _init(new_card, new_pos, new_type, old_num):
 	_card = new_card
 	_position = new_pos
 	_card_type = new_type
 	_old_cardnum = old_num
+	_z_index = _card.z_index
 
 
 func get_card():
@@ -31,3 +33,6 @@ func get_type():
 func get_oldnum():
 	return _old_cardnum
 
+
+func get_z_index():
+	return _z_index
