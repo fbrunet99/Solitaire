@@ -110,7 +110,9 @@ func move_to(new_position, remove):
 	if remove:
 		queue_free()
 
-
+func to_string():
+	return "card  num=" + str(get_cardnum()) + " value=" + str(get_value()) + " suit=" + str(get_suit())
+	
 func _on_card_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton and event.pressed:
 		var onTop = is_on_top()

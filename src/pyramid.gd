@@ -60,6 +60,7 @@ func deal_cards(restart):
 		_deck[i].position = $Stock.position
 
 
+
 	for i in range(0, TABLEAU_SIZE):
 		if row_item > row_max:
 			x = TABLEAU_LEFT - (COL_WIDTH/2 * row_max)
@@ -90,7 +91,7 @@ func deal_cards(restart):
 		card.set_face_down(true)
 		card.connect("card_clicked", self, "on_stock_clicked")
 		card.position = Vector2(x, y)
-		card.z_index = i
+		card.z_index = _stock.size()
 		_stock.push_back(card)
 
 	$ScoreOverlay.update_score(-DECK_SIZE)
@@ -120,6 +121,8 @@ func move_stock(card):
 
 	if _stock.size() > 0:
 		stock_card = _stock.pop_back()
+		print("clicked:", card.to_string())
+		print("stock:", stock_card.to_string())
 		store_move(card, CardInfo.TYPE_STOCK, card.get_cardnum())
 		$StockTween.interpolate_property(stock_card,
 			"position", stock_card.position,
@@ -163,7 +166,7 @@ func remove_tableau_match(card):
 func _on_StockTween_tween_completed(card, _key):
 	disconnect_card_signals(card)
 	card.connect("card_clicked", self, "on_tableau_clicked")
-	card.z_index = _stock_clicks
+	card.z_index = _tableau.size()
 	_tableau.push_back(card)
 	
 
@@ -202,7 +205,8 @@ func _on_Main_pressed():
 
 
 func _on_New_pressed():
-	start_game()
+	display_undo()
+#	start_game()
 
 func restore_stock(card_state):
 	var card = card_state.get_card()
@@ -210,8 +214,9 @@ func restore_stock(card_state):
 		_stock.push_back(card)
 		card.position = card_state.get_position()
 		card.set_face_down(true)
-		# TODO: Use the old position not the cur position
-#		card.z_index = card_state.get_z_index()
+		var _err = card.connect("card_clicked", self, "on_stock_clicked")	
+		
+		card.z_index = _stock.size()
 	else:
 		pass
 	
@@ -220,3 +225,15 @@ func _on_Undo_pressed():
 	if _undo.size() > 0:
 		var popped = _undo.pop_back()
 		restore_stock(popped)
+		
+
+func display_undo():
+	print("display_undo: size=", _undo.size(), 
+		" stock back=", _stock[_stock.size()-1].get_value())
+	if _undo.size() > 0:
+		print(" undo back=", _undo[_undo.size()-1].get_card().get_value())
+		
+	for i in _undo.size():
+		var state = _undo[i]
+		var card = state.get_card()
+		print(i, " type:", state.get_type(), " value:", card.get_value() )
